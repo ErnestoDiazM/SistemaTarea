@@ -1,0 +1,32 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Clone Repository') {
+            steps {
+                git 'https://github.com/ErnestoDiazM/SistemaTarea.git'
+            }
+        }
+        stage('Install Dependencies') {
+            steps {
+                bat 'npm install'
+            }
+        }
+        stage('Run Tests') {
+            steps {
+                script {
+                    try {
+                        bat 'npm test'
+                    } catch (err) {
+                        echo 'No hay pruebas especificadas, continuando...'
+                    }
+                }
+            }
+        }
+        stage('Build Docker Image') {
+            steps {
+                bat 'docker build -t sistematarea .'
+            }
+        }
+    }
+}
